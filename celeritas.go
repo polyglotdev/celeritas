@@ -1,5 +1,10 @@
 package celeritas
 
+import (
+	"fmt"
+	"github.com/joho/godotenv"
+)
+
 const (
 	// Version is the current version of the Celeritas framework.
 	Version = "1.0.0"
@@ -33,6 +38,18 @@ func (c Celeritas) New(rootPath string) error {
 	if err != nil {
 		return err
 	}
+
+	err = c.checkDotEnv(rootPath)
+	if err != nil {
+		return err
+	}
+
+	// read .env file
+	err = godotenv.Load(rootPath + "/.env")
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -54,5 +71,16 @@ func (c Celeritas) Init(p initPaths) error {
 		}
 	}
 	// If no errors occurred during the folder creation, return nil.
+	return nil
+}
+
+// checkDotEnv checks if the .env file exists in the root path of the project.
+// If the file does not exist, it creates a new .env file with the default values.
+func (c *Celeritas) checkDotEnv(path string) error {
+	err := c.CreateFileIfNotExist(fmt.Sprintf("%s/.env", path))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
