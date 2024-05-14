@@ -3,8 +3,10 @@ package celeritas
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -97,6 +99,28 @@ func (c *Celeritas) Init(p initPaths) error {
 	}
 	// If no errors occurred during the folder creation, return nil.
 	return nil
+}
+
+// ListenAndServe starts the HTTP server and listens for incoming requests.
+// It configures the server with the provided settings and routes,
+// and logs any errors that occur during server startup or shutdown.
+func (c *Celeritas) ListenAndServe() {
+	srv := &http.Server{
+		Addr:         fmt.Sprintf(":%s", os.Getenv("PORT")),
+		ErrorLog:     c.ErrorLog,
+		Handler:      c.routes(),
+		IdleTimeout:  30 * time.Second,
+		ReadTimeout:  30 * time.Second,
+		WriteTimeout: 600 * time.Second,
+	}
+
+	c.InfoLog.Printf("Starting 🚀 on port %s", os.Getenv("PORT"))
+	err := srv.ListenAndServe()
+	if err != nil {
+		c.ErrorLog.Fatalf("Error starting server: %v", err)
+	}
+
+	c.InfoLog.Printf("Server stopped")
 }
 
 // checkDotEnv checks if the .env file exists in the root path of the project.
