@@ -3,6 +3,7 @@ package celeritas
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"log"
 )
 
 const (
@@ -12,13 +13,16 @@ const (
 
 // Celeritas is the main struct for the Celeritas framework.
 type Celeritas struct {
-	AppName string
-	Debug   bool
-	Version string
+	AppName  string
+	Debug    bool
+	Version  string
+	ErrorLog *log.Logger
+	InfoLog  *log.Logger
+	RootPath string
 }
 
 // New creates the initial directory structure for a new Celeritas project.
-func (c Celeritas) New(rootPath string) error {
+func (c *Celeritas) New(rootPath string) error {
 	// create the initial directory structure
 	pathConfig := initPaths{
 		rootPath: rootPath,
@@ -58,7 +62,7 @@ func (c Celeritas) New(rootPath string) error {
 // It iterates over the folder names, and for each one, it calls the CreateDirIfNotExist method.
 // If the CreateDirIfNotExist method returns an error, it immediately returns this error.
 // If no errors occur during the folder creation, it returns nil.
-func (c Celeritas) Init(p initPaths) error {
+func (c *Celeritas) Init(p initPaths) error {
 	// Get the root path from the initPaths struct.
 	root := p.rootPath
 	// Iterate over the folder names in the initPaths struct.
