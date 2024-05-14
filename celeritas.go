@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"log"
+	"os"
+	"strconv"
 )
 
 const (
@@ -54,6 +56,11 @@ func (c *Celeritas) New(rootPath string) error {
 		return err
 	}
 
+	infoLog, errLog := c.startLoggers()
+	c.InfoLog = infoLog
+	c.ErrorLog = errLog
+	c.Debug, _ = strconv.ParseBool(os.Getenv("DEBUG"))
+	c.Version = Version
 	return nil
 }
 
@@ -87,4 +94,19 @@ func (c *Celeritas) checkDotEnv(path string) error {
 	}
 
 	return nil
+}
+
+// startLoggers initializes and returns two loggers: an info logger and an error logger.
+// The info logger is used for general logging of information, while the error logger is used for logging errors.
+// Both loggers write to standard output and include the date and time in their output.
+// The error logger also includes the file name and line number where the log call was made.
+// The rootPath parameter is currently unused.
+func (c *Celeritas) startLoggers() (*log.Logger, *log.Logger) {
+	var infoLog *log.Logger
+	var errLog *log.Logger
+
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	return infoLog, errLog
 }
