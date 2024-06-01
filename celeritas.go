@@ -16,7 +16,7 @@ import (
 
 const (
 	// Version is the current version of the Celeritas framework.
-	Version = "1.0.0"
+	Version = "1.0.9"
 )
 
 // Celeritas is the main struct for the Celeritas framework.
