@@ -47,33 +47,8 @@ func (c *Render) Page(w http.ResponseWriter, r *http.Request, view string, varia
 	case "go":
 		return c.GoPage(w, r, view, data)
 	case "jet":
-		return c.JetPage(w, r, view, data)
-	}
-	return nil
-}
 
-// JetPage is a method on the Render struct that renders a Jet template page.
-// It takes a http.ResponseWriter, http.Request, a string representing the view, and an interface{} for data.
-// The method first attempts to parse the template file corresponding to the view.
-// If an error occurs during parsing, it returns the error.
-// If the data passed is not nil, it asserts the data to be of type *TemplateData.
-// It then executes the template with the TemplateData and writes the output to the http.ResponseWriter.
-func (c *Render) JetPage(w http.ResponseWriter, r *http.Request, view string, data interface{}) error {
-	tmpl, err := template.ParseFiles(fmt.Sprintf("%s/views/%s.jet", c.RootPath, view))
-	if err != nil {
-		return err
 	}
-
-	td := &TemplateData{}
-	if data != nil {
-		td = data.(*TemplateData)
-	}
-
-	err = tmpl.Execute(w, td)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
